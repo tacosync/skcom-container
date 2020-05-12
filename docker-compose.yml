@@ -1,0 +1,7 @@
+version: "3.0"
+services:
+  skcom:
+    build: .
+    command:
+      - 'python3'
+      - 'start.py'
