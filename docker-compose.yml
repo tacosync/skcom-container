@@ -2,6 +2,8 @@ version: "3.0"
 services:
   skcom:
     build: .
+    environment:
+      - DISPLAY=:1
+      - WINEARCH=win32
     command:
-      - 'python3'
-      - 'start.py'
+      - /usr/bin/supervisord
