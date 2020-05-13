@@ -3,7 +3,9 @@ services:
   skcom:
     build: .
     environment:
-      - DISPLAY=:1
+      - DISPLAY=:0
       - WINEARCH=win32
+    ports:
+      - 5900:5900
     command:
       - /usr/bin/supervisord

@@ -15,7 +15,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # 安裝相依套件
 # 注意!! 安裝 software-properties-common 的時候可能會需要互動式輸入時區而卡住
 RUN apt-get install -y \
-    wget gnupg2 software-properties-common \
+    wget gnupg2 supervisor software-properties-common \
     xvfb x11vnc xdotool fluxbox
 
 # 這裡需要用到 wget gnupg2
