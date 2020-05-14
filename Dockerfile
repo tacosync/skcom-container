@@ -43,10 +43,11 @@ RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main
     apt-get install -y --install-recommends winehq-stable
 
 # 安裝虛擬 X Server 環境
-RUN apt-get install -y xvfb x11vnc xdotool icewm
+RUN apt-get install -y xvfb x11vnc xdotool
 
-# 建立 skcom 使用者
-# RUN useradd -m -p 0000 -s /bin/bash skcom
+# JWM Window Manager
+# 跟其他 X Server 相關套件分開安裝, 方便切換
+RUN apt-get install -y jwm
 
 # 變更 supervisord 設定
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
