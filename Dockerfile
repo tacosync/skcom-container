@@ -53,25 +53,41 @@ RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main
     apt-get update && \
     apt-get install -y winehq-stable
 
-# 預載 winboot 會靠妖的套件
-# ========================
-# 這些需要實驗是否可以在 wineboot 執行前先預裝好
-# 假如實驗無效, 那就需要用 xdotool 模擬人工安裝, 或是乾脆按不裝
-
-RUN mkdir ~/Downloads && cd ~/Downloads && \
-    wget https://dl.winehq.org/wine/wine-mono/5.0.0/wine-mono-5.0.0-x86.msi && \
-    wget https://dl.winehq.org/wine/wine-mono/5.0.0/wine-mono-5.0.0-x86.tar.xz && \
-    wget https://dl.winehq.org/wine/wine-mono/4.9.4/wine-mono-4.9.4.msi && \
-    wget https://dl.winehq.org/wine/wine-mono/4.9.4/wine-mono-bin-4.9.4.tar.gz && \
-    wget https://dl.winehq.org/wine/wine-gecko/2.47.1/wine-gecko-2.47.1-x86.msi && \
-    wget https://dl.winehq.org/wine/wine-gecko/2.47.1/wine-gecko-2.47.1-x86_64.msi
-
 # 安裝虛擬 X Server 環境
 RUN apt-get install -y xvfb x11vnc xdotool
 
 # JWM Window Manager
 # 跟其他 X Server 相關套件分開安裝, 方便切換
-RUN apt-get install -y jwm
+RUN apt-get install -y icewm
+
+# 建立一個 skbot 使用者, 設定需要的環境變數
+RUN useradd -m -r -p "" -s /bin/bash skbot && \
+    su -l skbot -c 'echo "" >> .bashrc' && \
+    su -l skbot -c 'echo "export DISPLAY=:0" >> .bashrc' && \
+    su -l skbot -c 'echo "export WINEARCH=win32" >> .bashrc'
+
+# 預載 winboot 會靠妖的套件
+# ========================
+# 這些需要實驗是否可以在 wineboot 執行前先預裝好
+# 假如實驗無效, 那就需要用 xdotool 模擬人工安裝, 或是乾脆按不裝
+# 注意!! mono 與 gecko 的版本必須要匹配 wine stable 才有作用, 否則還是會進入互動式安裝
+# 不過假如下載流程沒進行 MD5 驗證的話, 也許可以用改檔名的方式騙過去
+
+RUN su -l skbot -c 'wget -nv https://dl.winehq.org/wine/wine-mono/4.7.5/wine-mono-4.7.5.msi' && \
+    su -l skbot -c 'wget -nv https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi' && \
+    # su -l skbot -c 'wget -nv https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi' && \
+    su -l skbot -c 'wget -nv https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' && \
+    su -l skbot -c 'mkdir -p .cache/wine' && \
+    su -l skbot -c 'mv *.msi .cache/wine' && \
+    su -l skbot -c 'chmod +x winetricks'
+
+# 解壓縮 cab 用
+RUN apt-get install -y cabextract vim
+
+# 隨便設定 VNC 密碼
+RUN su -l skbot -c 'mkdir .vnc' && \
+    su -l skbot -c 'x11vnc -storepasswd 0000 .vnc/passwd'
 
 # 變更 supervisord 設定
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD supervisord.conf /root/supervisord.conf
