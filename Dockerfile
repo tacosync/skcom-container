@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:eoan
 
 # 先把套件庫切換到國網中心加速
 # ==========================
@@ -49,7 +49,7 @@ RUN wget -O - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
 # 這裡需要用到 software-properties-common
 # apt-get install -y --install-recommends winehq-stable
 
-RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' && \
+RUN add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ eoan main' && \
     apt-get update && \
     apt-get install -y winehq-stable
 
