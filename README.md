@@ -7,19 +7,19 @@ docker start -i skbot-0
 docker rm skbot-0
 ```
 
-# 作業系統選擇
+# 作業系統選擇問題
 
-安裝發生問題時, 要留意是不是發生缺版問題,
-例如在 2020-05-15 的時候, Ubuntu 20.04 LTS 提供的 stable 版本就有點舊
-導致 mono 和 gecko 安裝失敗, 反而是 19.10 可以正常運作
+Wine 並不是在所有系統都能順利運作, 有些疑難問題需要用特殊手段才排解, 需要消耗大量時間
+現階段用 Ubuntu 19.10 是最佳選擇
 
-### Debian
+系統                    | 實際狀況
+------------------------|--------------------------------------------------------------------
+Ubuntu 19.10 eoan       | 可以順利安裝
+Ubuntu 20.04 LTS focal  | PPA 提供的 winehq-stable 只到 4.0.4 版, 後續安裝 mono 與 gecko 會失敗
+Ubuntu 18.04 LTS bionic | 需要先自行安裝 libfaudio 套件
+Debian 10 buster        | 需要先自行安裝 libfaudio 套件
 
-https://dl.winehq.org/wine-builds/ubuntu/dists/focal/main/binary-i386/
-
-winehq-stable 5.0.0 2020-01-21
-
-https://wiki.debian.org/Wine
+## Debian, Ubuntu 18 遇到的問題
 
 ```
 The following packages have unmet dependencies:
@@ -27,26 +27,6 @@ The following packages have unmet dependencies:
 E: Unable to correct problems, you have held broken packages.
 ```
 
-### Ubuntu 20.04 LTS focal
+## Ubuntu 20 遇到的問題
 
-https://dl.winehq.org/wine-builds/ubuntu/dists/focal/main/binary-i386/
-
-winehq-stable 4.0.4 2020-04-24
-
-### Ubuntu 19.10 eoan
-
-https://dl.winehq.org/wine-builds/ubuntu/dists/eoan/main/binary-i386/
-
-winehq-stable 5.0.0 2020-01-21
-
-### Ubuntu 18.04 LTS bionic
-
-https://dl.winehq.org/wine-builds/ubuntu/dists/eoan/main/binary-i386/
-
-winehq-stable 5.0.0 2020-01-21
-
-```
-The following packages have unmet dependencies:
- winehq-stable : Depends: wine-stable (= 5.0.0~bionic)
-E: Unable to correct problems, you have held broken packages.
-```
+安裝 wine-mono 與 wine-gecko 會出現 1603 的錯誤碼, 然後再安裝其他軟體都會意外中斷
