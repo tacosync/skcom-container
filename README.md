@@ -9,7 +9,7 @@ docker rm skbot-0
 
 # 作業系統選擇問題
 
-Wine 並不是在所有系統都能順利運作, 有些疑難問題需要用特殊手段才排解, 需要消耗大量時間
+Wine 並不是在所有系統都能順利運作, 有些疑難問題需要用特殊手段才排解, 需要消耗大量時間<br>
 現階段用 Ubuntu 19.10 是最佳選擇
 
 系統                    | 實際狀況
@@ -29,4 +29,5 @@ E: Unable to correct problems, you have held broken packages.
 
 ## Ubuntu 20 遇到的問題
 
-安裝 wine-mono 與 wine-gecko 會出現 1603 的錯誤碼, 然後再安裝其他軟體都會意外中斷
+安裝 wine-mono 與 wine-gecko 會出現 1603 的錯誤碼, 然後再安裝其他軟體都會意外中斷<br>
+去 PPA 的網站查, 發現版本只提供到 4.0.4
