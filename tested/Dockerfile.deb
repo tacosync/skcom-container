@@ -1,0 +1,38 @@
+FROM debian:latest
+
+# Debian 已經預先裝好 tzdata, 不需要跑 apt-get install tzdata
+# 所以可以開機時直接變更時區, 不需要先更新套件清單
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+# http://security.debian.org 沒有鏡像到國網中心, 這點要注意
+RUN sed -i 's/deb.debian.org/free.nchc.org.tw/' /etc/apt/sources.list && \
+    dpkg --add-architecture i386 && \
+    apt-get update
+
+# 照這篇來裝 https://wiki.debian.org/Wine
+RUN apt-get install -y \
+    wget supervisor procps cabextract vim \
+    xvfb x11vnc xdotool \
+    wine wine32 wine64 libwine libwine:i386 fonts-wine
+
+# 建立一個 skbot 使用者, 設定需要的環境變數
+RUN useradd -m -r -p "" -s /bin/bash skbot && \
+    su -l skbot -c 'echo "" >> .bashrc' && \
+    su -l skbot -c 'echo "export DISPLAY=:0" >> .bashrc' && \
+    su -l skbot -c 'echo "export WINEARCH=win32" >> .bashrc' && \
+    su -l skbot -c 'wget -nv https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' && \
+    su -l skbot -c 'chmod +x winetricks'
+
+# 隨便設定 VNC 密碼
+RUN su -l skbot -c 'mkdir .vnc' && \
+    su -l skbot -c 'x11vnc -storepasswd 0000 .vnc/passwd'
+
+# 變更 supervisord 設定
+ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD supervisord.conf /root/supervisord.conf
+
+# JWM Window Manager
+# 跟其他 X Server 相關套件分開安裝, 方便切換
+RUN apt-get install -y icewm
