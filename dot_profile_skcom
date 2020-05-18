@@ -1,0 +1,6 @@
+export DISPLAY=:0
+export WINEARCH=win32
+export PATH=$PATH:/opt/wine-stable/bin
+export WINPY='C:\users\skbot\local settings\application data\programs\python\python38-32'
+export WINEPATH="$WINPY;$WINPY\\scripts"
+export WINEDEBUG=-all
