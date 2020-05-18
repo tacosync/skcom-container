@@ -67,16 +67,18 @@ RUN useradd -m -r -p "" -s /bin/bash skbot && \
 # supervisord 設定
 ADD supervisord-bg.conf /root/supervisord-bg.conf
 ADD supervisord-fg.conf /root/supervisord-fg.conf
-ADD waitwm.sh /root/waitwm.sh
+ADD waitproc.sh /root/waitproc.sh
+RUN chmod +x /root/waitproc.sh
 
 # 建置 wine 環境
-# TODO: wineboot --init 之後無法安裝 Python 3.8.3
+# 注意!! wineboot --init 執行完後, 需要等 wineserver 關閉, 之後才能正常運作
 
 RUN supervisord -c /root/supervisord-bg.conf && \
-    chmod +x /root/waitwm.sh && \
-    bash /root/waitwm.sh && \
-    su -l skbot -c 'wget -nv https://www.python.org/ftp/python/3.8.3/python-3.8.3.exe' && \
+    /root/waitproc.sh icewm started && \
     echo "Initialize wine environment for user skbot ..." && \
     su -l skbot -c 'wineboot --init' && \
-    sleep 3 && \
-    kill `cat /root/supervisord.pid`
+    /root/waitproc.sh wineserver terminated && \
+    su -l skbot -c 'wget -nv https://www.python.org/ftp/python/3.8.3/python-3.8.3.exe' && \
+    su -l skbot -c 'wine python-3.8.3.exe /passive' && \
+    kill `cat /root/supervisord.pid` && \
+    /root/waitproc.sh supervisord terminated
