@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/windows:2004
+RUN curl -L -o C:\pythoninstaller.exe https://www.python.org/ftp/python/3.7.7/python-3.7.7-amd64.exe
+RUN powershell -c "Start-Process C:\pythoninstaller.exe -Wait -ArgumentList @( '/passive','InstallAllUsers=1', 'TargetDir=C:\Python', 'PrependPath=1', 'Shortcuts=0','Include_doc=0','Include_pip=1', 'Include_test=0')"
+RUN powershell -c "$env:PATH = [Environment]::GetEnvironmentVariable('PATH',[EnvironmentVariableTarget]::Machine)"
+RUN powershell -c "python -m pip install --upgrade pip"
+RUN powershell -c "python -m pip install skcom"
+#RUN powershell -c "python -m skcom.tools.setup"
+
+CMD ["cmd"]
